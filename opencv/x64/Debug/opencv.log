@@ -1,0 +1,8 @@
+﻿  ConvertImage.cpp
+c1xx : warning C4199: 2 フェーズの名前参照は、C++/CLI、C++/CX、OpenMP ではサポートされていません。/Zc:twoPhase- を使用します
+c:\opencv\build\include\opencv2\calib3d.hpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  opencv.cpp
+c1xx : warning C4199: 2 フェーズの名前参照は、C++/CLI、C++/CX、OpenMP ではサポートされていません。/Zc:twoPhase- を使用します
+c:\opencv\build\include\opencv2\calib3d.hpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+  コードを生成中...
+  opencv.vcxproj -> C:\Users\rinna\Documents\Cpp\Projects\Edge\x64\Debug\opencv.exe
