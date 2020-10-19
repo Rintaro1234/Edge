@@ -39,13 +39,12 @@ void ConvertImage::edge(uchar *data, int width, int hight, uchar *output)
 	int pixels = width * hight;
 
 	// エッジ検出
-	float *side = new float[pixels];
-	float *vertical = new float[pixels];
 	#pragma omp parallel for
 	for (int y = 0; y < hight; y++)
 	{
 		for (int x = 0; x < width; x++)
 		{
+			// それぞれの配列の位置を算出
 			int target	= (x + y * width) * 3;
 			int left	= target - 3;
 			int right	= target + 3;
@@ -92,8 +91,6 @@ void ConvertImage::edge(uchar *data, int width, int hight, uchar *output)
 			// 左右面との差の平均
 			float differenceS = (averageLeft + averageRight) / 2.0f;
 
-			side[x + y * width] = differenceS;
-
 			// 上
 			int ur = (up < 0) ? data[down + 0] : data[up + 0];
 			int ug = (up < 0) ? data[down + 1] : data[up + 1];
@@ -125,18 +122,10 @@ void ConvertImage::edge(uchar *data, int width, int hight, uchar *output)
 			// 上下面との差の平均
 			float differenceV = (averageUp + averageDown) / 2.0f;
 
-			vertical[x + y * width] = differenceV;
+			// 合成
+			float difference = differenceV + differenceS;
+			float d = (0.18f < difference) ? 0.0f : 1.0f;
+			output[x + y * width] = (uchar)(d * 255);
 		}
 	}
-
-	// 合成
-	#pragma omp parallel for
-	for (int i = 0; i < pixels; i++)
-	{
-		float difference = side[i] + vertical[i];
-		float d = (0.18f < difference) ? 0.0f : 1.0f;
-		output[i] = (uchar)(d * 255);
-	}
-	delete[] side;
-	delete[] vertical;
 }
