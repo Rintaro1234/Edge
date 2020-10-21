@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
 	// イメージの読み込み
 	Mat img;
 	//string path = argv[1];
-	img = imread("photos/testImage15.jpg");
+	img = imread("photos/testImage3.jpg");
 
 	// イメージを配列化
 	int hight = img.rows;

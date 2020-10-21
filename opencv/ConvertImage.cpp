@@ -37,11 +37,13 @@ void ConvertImage::mat2array(Mat img, uchar *data)
 void ConvertImage::edge(uchar *data, int width, int hight, uchar *output)
 {
 	int pixels = width * hight;
+	float previousAverageR = 0.0f;
 
 	// エッジ検出
 	#pragma omp parallel for
 	for (int y = 0; y < hight; y++)
 	{
+		bool initialize = false;
 		for (int x = 0; x < width; x++)
 		{
 			// それぞれの配列の位置を算出
@@ -60,20 +62,6 @@ void ConvertImage::edge(uchar *data, int width, int hight, uchar *output)
 			int tg = data[target + 1];
 			int tb = data[target + 2];
 
-			// 左
-			int lr = (left < sideMin) ? data[right + 0] : data[left + 0];
-			int lg = (left < sideMin) ? data[right + 1] : data[left + 1];
-			int lb = (left < sideMin) ? data[right + 2] : data[left + 2];
-
-			// 左側との差の割合
-			float averageLr = abs(lr - tr) / 255.0f;
-			float averageLg = abs(lg - tg) / 255.0f;
-			float averageLb = abs(lb - tb) / 255.0f;
-			// 一番差が大きいものをとる
-			float averageLeft =	 (averageLr < averageLg) ?
-								 (averageLg < averageLb) ? averageLb : averageLg 
-								:(averageLr < averageLb) ? averageLb : averageLr;
-
 			// 右
 			int rr = (sideMax <= right) ? data[left + 0] : data[right + 0];
 			int rg = (sideMax <= right) ? data[left + 1] : data[right + 1];
@@ -87,6 +75,18 @@ void ConvertImage::edge(uchar *data, int width, int hight, uchar *output)
 			float averageRight =	 (averageRr < averageRg) ? 
 									 (averageRg < averageRb) ? averageRb : averageRg 
 									:(averageRr < averageRb) ? averageRb : averageRr;
+
+			if (!initialize)
+			{
+				previousAverageR = averageRight;
+				initialize = true;
+			}
+
+			// 今回の右の結果を左に移行
+			// 左
+			float averageLeft = previousAverageR;
+			// 更新
+			previousAverageR = averageRight;
 
 			// 左右面との差の平均
 			float differenceS = (averageLeft + averageRight) / 2.0f;
