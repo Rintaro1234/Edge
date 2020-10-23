@@ -8,7 +8,6 @@
 #include <opencv2/opencv.hpp>
 #include <windows.h>
 #include "ConvertImage.h"
-#include "extractionEdge.h"
 
 using namespace std;
 using namespace cv;
@@ -31,8 +30,13 @@ int main(int argc, char* argv[])
 
 	// イメージの読み込み
 	Mat img;
+<<<<<<< HEAD
+	//string path = argv[1];
+	img = imread("photos/testImage3.jpg");
+=======
 	string path = argv[1];
 	img = imread(path);
+>>>>>>> 166df0d... リリースビルドに対応
 
 	// イメージを配列化
 	int hight = img.rows;
@@ -47,21 +51,21 @@ int main(int argc, char* argv[])
 
 	// 画像加工
 	uchar *edgeData = new uchar[pixels];
-	extractionEdge::edge(data, width, hight, edgeData);
+	ConvertImage::edge(data, width, hight, edgeData);
 	delete[] data;
 
 	// 計測終了
 	QueryPerformanceCounter(&end);
 
 	// 加工済み配列をMat型に変換
-	Mat convertedImg(hight, width, CV_8U, edgeData);
+	Mat c(hight, width, CV_8U, edgeData);
 
 	double time = static_cast<double>(end.QuadPart - start.QuadPart) * 1000.0 / freq.QuadPart;
 	cout << time << "ms" << endl;
 
 	// イメージの表示
 	string outputPath = (string)argv[2] + "result.jpg";
-	imwrite(outputPath, convertedImg);
+	imwrite(outputPath, c);
 
 	delete[] edgeData;
 
