@@ -1,4 +1,10 @@
-﻿#include <iostream>
+﻿#ifdef _DEBUG
+#pragma comment(lib, "C:\\opencv\\build\\x64\\vc15\\lib\\opencv_world440d.lib")
+#else
+#pragma comment(lib, "C:\\opencv\\build\\x64\\vc15\\lib\\opencv_world440.lib")
+#endif
+
+#include <iostream>
 #include <opencv2/opencv.hpp>
 #include <windows.h>
 #include "ConvertImage.h"
@@ -9,13 +15,13 @@ using namespace cv;
 int main(int argc, char* argv[])
 {
 	// もしなんも入力されてなかったら終わる
-	/*if (argv[1] == NULL)
+	if (argv[1] == NULL || argv[2] == NULL)
 	{
-		cout << "NoPath";
+		cout << "NoPath or NoPath Output Folder";
 		return 1;
 	}
 
-	cout << argv[1] << endl;*/
+	cout << argv[1] << endl;
 
 	// 計測
 	LARGE_INTEGER freq;
@@ -24,8 +30,8 @@ int main(int argc, char* argv[])
 
 	// イメージの読み込み
 	Mat img;
-	//string path = argv[1];
-	img = imread("photos/testImage3.jpg");
+	string path = argv[1];
+	img = imread(path);
 
 	// イメージを配列化
 	int hight = img.rows;
@@ -53,9 +59,8 @@ int main(int argc, char* argv[])
 	cout << time << "ms" << endl;
 
 	// イメージの表示
-	imshow("c", c);
-	waitKey(0);
-	imwrite("photos/c.jpg", c);
+	string outputPath = (string)argv[2] + "result.jpg";
+	imwrite(outputPath, c);
 
 	delete[] edgeData;
 
