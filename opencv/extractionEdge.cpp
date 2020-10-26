@@ -1,5 +1,8 @@
 #include "extractionEdge.h"
 
+// ログバッファー
+extern std::stringstream logBuf;
+
 float extractionEdge::edgePercentage = 0.09f;
 
 // 画像データーからエッジを検出
@@ -107,11 +110,18 @@ void extractionEdge::configRead(FILE *cfg)
 		{
 			float data;
 			sscanf_s(text, "%*[^0123456789]%f", &data);
-			std::cout << data << std::endl;
 			edgePercentage = data;
 			goto GET_edgePercentage;
 		}
+
+		// すべての要素の読み取り終了
+		goto PASS_thisLine;
+
 	GET_edgePercentage:
-		std::cout << "GET_edgePercentage" << std::endl;
+		logBuf << "INFO : GET_edgePercentage:" << edgePercentage << std::endl;
+
+	PASS_thisLine:
+		logBuf << "INFO : PASS_thisLine" << std::endl;
 	}
+	logBuf << "INFO : FINISH_ReadConfig" << std::endl;
 }

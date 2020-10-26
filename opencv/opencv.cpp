@@ -1,35 +1,39 @@
-﻿#ifdef _DEBUG
-#pragma comment(lib, "C:\\opencv\\build\\x64\\vc15\\lib\\opencv_world440d.lib")
-#else
-#pragma comment(lib, "C:\\opencv\\build\\x64\\vc15\\lib\\opencv_world440.lib")
-#endif
-
-#include <iostream>
+﻿#include <iostream>
 #include <opencv2/opencv.hpp>
 #include <windows.h>
+#include <fstream>
 #include "ConvertImage.h"
 #include "extractionEdge.h"
-
 using namespace std;
 using namespace cv;
 
+// ログバッファー
+stringstream logBuf;
+
+// 関数宣言
+void writeLog();
+
 int main(int argc, char* argv[])
 {
+	// ファイルのパスを取得
 	string readPath;
 	string outputPath;
+
 #ifdef _DEBUG
+	// デバックモード
 	readPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\opencv\\photos\\testImage11.jpg";
 	outputPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\x64\\Debug\\photos\\result.jpg";
 #else
+	// リリースモード
 	// もしなんも入力されてなかったら終わる
 	if (argv[1] == NULL || argv[2] == NULL)
 	{
-		cout << "NoPath or NoPath Output Folder";
-		return 1;
+		logBuf << "ERROR: NoPath or NoPath Output Folder";
+		logBuf << "INFO : Exit the program" << endl;
+		return -1;
 	}
 
-	cout << argv[1] << endl;
-	readpath = argv[1];
+	readPath = argv[1];
 	outputPath = (string)argv[2] + "result.jpg";
 #endif
 
@@ -41,6 +45,15 @@ int main(int argc, char* argv[])
 	// イメージの読み込み
 	Mat img;
 	img = imread(readPath);
+
+	// ファイルがあるかの確認
+	if (img.data == NULL)
+	{
+		logBuf << "ERROR: ImageFile not opend" << endl;
+		logBuf << "INFO : Exit the program" << endl;
+		writeLog();
+		return -1;
+	}
 
 	// イメージを配列化
 	int hight = img.rows;
@@ -54,11 +67,16 @@ int main(int argc, char* argv[])
 	FILE *cfg;
 	errno_t err = fopen_s(&cfg, "config.cfg", "r");
 
+	// 開けなかったらログを出す
 	if (err != 0)
 	{
-		cout << "Error: ConfigFile not opend" << endl;
+		logBuf << "ERROR: ConfigFile not opend" << endl;
+		logBuf << "INFO : Use the initial value" << endl;
 	}
-	extractionEdge::configRead(cfg);
+	else
+	{
+		extractionEdge::configRead(cfg);
+	}
 
 	// 計測開始
 	QueryPerformanceCounter(&start);
@@ -75,12 +93,27 @@ int main(int argc, char* argv[])
 	Mat convertedImg(hight, width, CV_8U, edgeData);
 
 	double time = static_cast<double>(end.QuadPart - start.QuadPart) * 1000.0 / freq.QuadPart;
-	cout << time << "ms" << endl;
+	logBuf << "INFO : time_" << time << "ms" << endl;
 
 	// イメージの保存
 	imwrite(outputPath, convertedImg);
 
 	delete[] edgeData;
 
+	// ログファイルの保存
+	logBuf << "INFO : SUCCSESS!" << endl;
+	writeLog();
+
 	return 0;
+}
+
+// ログファイルの保存
+void writeLog()
+{
+	// ファイルを開く
+	FILE *log;
+	fopen_s(&log, "log.log", "w");
+	// 書き込み
+	fputs(logBuf.str().c_str(), log);
+	fclose(log);
 }
