@@ -15,6 +15,12 @@ using namespace cv;
 
 int main(int argc, char* argv[])
 {
+	string readPath;
+	string outputPath;
+#ifdef _DEBUG
+	readPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\opencv\\photos\\testImage11.jpg";
+	outputPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\x64\\Debug\\photos\\result.jpg";
+#else
 	// もしなんも入力されてなかったら終わる
 	if (argv[1] == NULL || argv[2] == NULL)
 	{
@@ -23,6 +29,9 @@ int main(int argc, char* argv[])
 	}
 
 	cout << argv[1] << endl;
+	readpath = argv[1];
+	outputPath = (string)argv[2] + "result.jpg";
+#endif
 
 	// 計測
 	LARGE_INTEGER freq;
@@ -31,8 +40,7 @@ int main(int argc, char* argv[])
 
 	// イメージの読み込み
 	Mat img;
-	string path = argv[1];
-	img = imread(path);
+	img = imread(readPath);
 
 	// イメージを配列化
 	int hight = img.rows;
@@ -41,6 +49,16 @@ int main(int argc, char* argv[])
 
 	uchar *data = new uchar[pixels * 3];
 	ConvertImage::mat2array(img, data);
+
+	// コンフィグファイルの読み込み
+	FILE *cfg;
+	errno_t err = fopen_s(&cfg, "config.cfg", "r");
+
+	if (err != 0)
+	{
+		cout << "Error: ConfigFile not opend" << endl;
+	}
+	extractionEdge::configRead(cfg);
 
 	// 計測開始
 	QueryPerformanceCounter(&start);
@@ -59,8 +77,7 @@ int main(int argc, char* argv[])
 	double time = static_cast<double>(end.QuadPart - start.QuadPart) * 1000.0 / freq.QuadPart;
 	cout << time << "ms" << endl;
 
-	// イメージの表示
-	string outputPath = (string)argv[2] + "result.jpg";
+	// イメージの保存
 	imwrite(outputPath, convertedImg);
 
 	delete[] edgeData;

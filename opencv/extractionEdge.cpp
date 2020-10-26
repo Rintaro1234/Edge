@@ -1,5 +1,7 @@
 #include "extractionEdge.h"
 
+float extractionEdge::edgePercentage = 0.09f;
+
 // 画像データーからエッジを検出
 void extractionEdge::edge(uchar *data, int width, int hight, uchar *output)
 {
@@ -86,8 +88,30 @@ void extractionEdge::edge(uchar *data, int width, int hight, uchar *output)
 
 			// 平均を取得
 			float difference = (averageLeft + averageRight + averageUp + averageDown) / 4.0f;
-			float d = (0.09f < difference) ? 0.0f : 1.0f;
+			float d = (edgePercentage < difference) ? 0.0f : 1.0f;
 			output[x + y * width] = (uchar)(d * 255);
 		}
+	}
+}
+
+void extractionEdge::configRead(FILE *cfg)
+{
+	// コンフィグファイルの読み込み
+	char tmp[256];
+	while (fgets(tmp, 256, cfg) != NULL)
+	{
+		char *text;
+		// 色の差の許容値を取得
+		text = strstr(tmp, "edgePercentage");
+		if (text != NULL)
+		{
+			float data;
+			sscanf_s(text, "%*[^0123456789]%f", &data);
+			std::cout << data << std::endl;
+			edgePercentage = data;
+			goto GET_edgePercentage;
+		}
+	GET_edgePercentage:
+		std::cout << "GET_edgePercentage" << std::endl;
 	}
 }
