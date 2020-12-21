@@ -1,2 +1,7 @@
-﻿  opencv.cpp
-c:\users\rinna\documents\cpp\projects\opencv\opencv\opencv.cpp(2): fatal error C1083: include ファイルを開けません。'opencv2/opencv.hpp':No such file or directory
+﻿  ConvertImage.cpp
+c:\users\rinna\documents\cpp\projects\edge\opencv\convertimage.h(2): fatal error C1083: include ファイルを開けません。'opencv2/opencv.hpp':No such file or directory
+  extractionEdge.cpp
+c:\users\rinna\documents\cpp\projects\edge\opencv\extractionedge.h(2): fatal error C1083: include ファイルを開けません。'opencv2/opencv.hpp':No such file or directory
+  opencv.cpp
+c:\users\rinna\documents\cpp\projects\edge\opencv\opencv.cpp(2): fatal error C1083: include ファイルを開けません。'opencv2/opencv.hpp':No such file or directory
+  コードを生成中...
