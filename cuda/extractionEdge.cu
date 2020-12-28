@@ -1,7 +1,7 @@
 ﻿#include "extractionEdge.cuh"
 
 // 一ブロック当たりのスレッド数
-#define threads 256
+#define threads 4
 
 #define edgePercentage (unsigned char)(0.09 * 255)
 
@@ -16,6 +16,9 @@ __global__ void kernel(int width, int hight, unsigned char *output)
 
 	// 範囲からはみ出るようなら逃げる
 	if (idx >= width) return;
+
+	// シェアードメモリの確保
+	extern __shared__ unsigned char BUFF[];
 
 	//テスト処理(白黒化)
 	for (int i = 0; i < hight; i++)
@@ -80,7 +83,14 @@ __global__ void kernel(int width, int hight, unsigned char *output)
 								   :(averageDr < averageDb) ? averageDb : averageDr;
 
 		unsigned char difference = (averageLeft + averageRight + averageUp + averageDown) / 4.0f;
-		output[idx + width * i] = (edgePercentage < difference) ? 0 : 255;;
+		BUFF[hight * threadIdx.x + i] = (edgePercentage < difference) ? 0 : 255;
+		//output[idx + width * i] = (edgePercentage < difference) ? 0 : 255;
+	}
+
+	// シェアードメモリの内容をデバイスメモリに転送
+	for (int i = 0; i < hight; i++)
+	{
+		output[idx + width * i] = BUFF[hight * threadIdx.x + i];
 	}
 
 	return;
@@ -115,7 +125,8 @@ unsigned char *edge(unsigned char *data, int width, int hight)
 	// カーネルの実行
 	dim3 block(threads, 1, 1);
 	dim3 grid((width + threads - 1) / threads, 1, 1);
-	kernel <<< grid, block >>> (width, hight, pDevOutput);
+	size_t shared = sizeof(unsigned char) * hight * threads;
+	kernel <<< grid, block, shared >>> (width, hight, pDevOutput);
 
 	// データの転送
 	cudaMemcpy(pHostOutput, pDevOutput, pixelSize, cudaMemcpyDeviceToHost);

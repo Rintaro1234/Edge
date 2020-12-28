@@ -1,2 +1,3 @@
 time ~613.028ms(初期実装(CPUと同じ))
 time ^436.008ms(float -> unsigthed char, 無駄な計算を除去)
+time ~1317.11(shared memoryを使った(4threads/blockだからもはやGPUの使用価値なし？))
