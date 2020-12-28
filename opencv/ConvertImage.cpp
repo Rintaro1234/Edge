@@ -1,7 +1,7 @@
 #include "ConvertImage.h"
 
 // 画像データーを配列に変換
-void ConvertImage::mat2array(Mat img, uchar *data)
+void ConvertImage::mat2array(Mat img, unsigned char *data)
 {
 	// BGRからRGBに変換
 	cvtColor(img, img, COLOR_BGR2RGB);

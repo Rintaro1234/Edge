@@ -21,8 +21,8 @@ int main(int argc, char* argv[])
 
 #ifdef _DEBUG
 	// デバックモード
-	readPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\opencv\\photos\\testImage11.jpg";
-	outputPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\x64\\Debug\\photos\\result.jpg";
+	readPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\opencv\\photos\\testImage2.jpg";
+	outputPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\x64\\Debug\\photos\\result_cp.jpg";
 #else
 	// リリースモード
 	// もしなんも入力されてなかったら終わる
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 	int width = img.cols;
 	int pixels = width * hight;
 
-	uchar *data = new uchar[pixels * 3];
+	unsigned char *data = new unsigned char[pixels * 3];
 	ConvertImage::mat2array(img, data);
 
 	// コンフィグファイルの読み込み
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 	QueryPerformanceCounter(&start);
 
 	// 画像加工
-	uchar *edgeData = new uchar[pixels];
+	unsigned char *edgeData = new unsigned char[pixels];
 	extractionEdge::edge(data, width, hight, edgeData);
 	delete[] data;
 

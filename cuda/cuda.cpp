@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 #ifdef _DEBUG
 	// デバックモード
 	readPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\opencv\\photos\\testImage2.jpg";
-	outputPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\x64\\Debug\\photos\\result.jpg";
+	outputPath = "C:\\Users\\rinna\\Documents\\Cpp\\Projects\\Edge\\x64\\Debug\\photos\\result_cu.jpg";
 #else
 	// リリースモード
 	// もしなんも入力されてなかったら終わる
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 	int width = img.cols;
 	int pixels = width * hight;
 
-	uchar *data = new uchar[pixels * 3];
+	unsigned char *data = new unsigned char[pixels * 3];
 	ConvertImage::mat2array(img, data);
 
 	// コンフィグファイルの読み込み
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 	QueryPerformanceCounter(&start);
 
 	// 画像加工
-	uchar *edgeData = edge(data, width, hight);
+	unsigned char *edgeData = edge(data, width, hight);
 	delete[] data;
 
 	for (int i = 0; i < 12; i++)

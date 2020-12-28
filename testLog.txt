@@ -1,0 +1,2 @@
+time ~613.028ms(初期実装(CPUと同じ))
+time ^436.008ms(float -> unsigthed char, 無駄な計算を除去)

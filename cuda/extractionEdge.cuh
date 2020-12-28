@@ -3,4 +3,4 @@
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
 
-uchar *edge(uchar *data, int width, int hight);
+unsigned char *edge(unsigned char *data, int width, int hight);

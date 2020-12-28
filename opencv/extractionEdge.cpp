@@ -6,7 +6,7 @@ extern std::stringstream logBuf;
 float extractionEdge::edgePercentage = 0.09f;
 
 // 画像データーからエッジを検出
-void extractionEdge::edge(uchar *data, int width, int hight, uchar *output)
+void extractionEdge::edge(unsigned char *data, int width, int hight, unsigned char *output)
 {
 	int pixels = width * hight;
 	float previousAverageR = 0.0f;
@@ -92,7 +92,7 @@ void extractionEdge::edge(uchar *data, int width, int hight, uchar *output)
 			// 平均を取得
 			float difference = (averageLeft + averageRight + averageUp + averageDown) / 4.0f;
 			float d = (edgePercentage < difference) ? 0.0f : 1.0f;
-			output[x + y * width] = (uchar)(d * 255);
+			output[x + y * width] = (unsigned char)(d * 255);
 		}
 	}
 }
